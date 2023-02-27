@@ -9,5 +9,4 @@ const solution = (N, K) => {
   return count;
 };
 
-const answer = solution(25, 5);
-console.log(answer);
+module.exports = solution;
