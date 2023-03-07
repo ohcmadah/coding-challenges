@@ -12,21 +12,23 @@ function solution(maps) {
   const n = maps.length;
   const m = maps[0].length;
 
-  const queue = [[0, 0]];
+  const queue = [[0, 0, 0]];
   while (queue.length !== 0) {
-    const [x, y] = queue.shift();
+    const [x, y, count] = queue.shift();
+    if (x + 1 === m && y + 1 === n) {
+      return count;
+    }
     for (let i = 0; i < 4; i++) {
       const [nx, ny] = [x + dx[i], y + dy[i]];
       if (nx < 0 || ny < 0 || m <= nx || n <= ny || !maps[ny][nx]) {
         continue;
       }
-      if (maps[ny][nx] === 1 || maps[y][x] + 1 < maps[ny][nx]) {
-        maps[ny][nx] = maps[y][x] + 1;
+      if (maps[ny][nx] === 1) {
+        maps[ny][nx] = 0;
         queue.push([nx, ny]);
       }
     }
   }
 
-  const count = maps[n - 1][m - 1];
-  return count === 1 ? -1 : count;
+  return -1;
 }
