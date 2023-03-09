@@ -5,14 +5,6 @@ const solution = (N, M, map) => {
   map = map.map((row) => row.split(" ").map((n) => Number(n)));
   const temp = new Array(N).fill().map((_) => new Array(M));
 
-  const copy = () => {
-    for (let i = 0; i < N; i++) {
-      for (let j = 0; j < map[i].length; j++) {
-        temp[i][j] = map[i][j];
-      }
-    }
-  };
-
   const virus = (y, x) => {
     for (let i = 0; i < 4; i++) {
       const [ny, nx] = [y + dy[i], x + dx[i]];
@@ -26,10 +18,28 @@ const solution = (N, M, map) => {
     }
   };
 
+  const calcIndex = (index) => {
+    const i = Math.floor(index / M);
+    const j = index % M;
+    return [i, j];
+  };
+
+  const copy = () => {
+    for (let i = 0; i < N; i++) {
+      for (let j = 0; j < M; j++) {
+        temp[i][j] = map[i][j];
+      }
+    }
+  };
+
   let answer = 0;
-  const dfs = (count) => {
-    if (count === 3) {
+  const dfs = (indexs) => {
+    if (indexs.length === 3) {
       copy();
+      for (const index of indexs) {
+        const [i, j] = calcIndex(index);
+        temp[i][j] = 1;
+      }
       for (let i = 0; i < N; i++) {
         for (let j = 0; j < M; j++) {
           if (temp[i][j] === 2) {
@@ -42,18 +52,16 @@ const solution = (N, M, map) => {
       return;
     }
 
-    for (let i = 0; i < N; i++) {
-      for (let j = 0; j < M; j++) {
-        if (map[i][j] === 0) {
-          map[i][j] = 1;
-          dfs(count + 1);
-          map[i][j] = 0;
-        }
+    const lastIndex = indexs.length ? indexs[indexs.length - 1] : -1;
+    for (let index = lastIndex + 1; index < N * M; index++) {
+      const [i, j] = calcIndex(index);
+      if (map[i][j] === 0) {
+        dfs([...indexs, index]);
       }
     }
   };
 
-  dfs(0);
+  dfs([]);
   return answer;
 };
 
